@@ -1,0 +1,12 @@
+coverage/
+*.o
+*.gcda
+*.gcno
+*.exe
+*.out
+googletest/
+vender/
+gtest/
+*.ut
+*.ppm
+*.gif
