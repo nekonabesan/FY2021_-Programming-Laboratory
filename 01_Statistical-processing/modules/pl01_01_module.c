@@ -101,7 +101,7 @@ struct person * eol_person(struct person *pos) {
   }
   struct person *next = pos->next;
   while(1){
-    if(next->next){
+    if(next->next != NULL){
       next = next->next;
     } else {
       break;
@@ -243,3 +243,217 @@ struct person* b_sort(struct person *p, unsigned int prefix) {
 
   return head_person(t);
 }
+
+
+struct person* m_sort(struct person *p, unsigned int prefix){
+  struct person* tmp_person = (struct person*)malloc(sizeof(struct person) * 1); 
+  tmp_person = initialize(tmp_person);
+  struct person* h = head_person(p);
+  struct person* e = eol_person(p);
+  struct person *prev = NULL;
+  struct person* buf = NULL;
+  struct person* t = NULL;
+  struct person* tmp_a = NULL;
+  struct person* tmp_b = NULL;
+  unsigned int n = e->seq + 1;
+  unsigned int na = 0;
+  unsigned int nb = 0;
+  bool odd_flg = false;
+
+  // 要素数1の場合処理は行わない
+  if(e->seq == 0){
+    return p;
+  }
+
+  if(n % 2 == 0){
+    na = (n / 2);
+    nb = (n / 2);
+  } else {
+    na = (n / 2);
+    nb = (n / 2) + (n % 2);
+  }
+  
+  /*printf("n:%d\n", n);
+  printf("na:%d\n", na);
+  printf("nb:%d\n", nb);*/
+  
+  struct person* a = (struct person*)malloc(sizeof(struct person) * na);
+  struct person* b = (struct person*)malloc(sizeof(struct person) * nb);
+
+  p = head_person(p);
+  for(unsigned int i = 0; i < na; i++){
+    t = (struct person*)malloc(sizeof(struct person) * 1);
+    a = initialize(t);
+    // リストの先頭要素を取得
+    if(i == 0){
+      a->prev = NULL;
+    }
+    if(prev){
+      a->prev = prev;
+      prev->next = a;
+    }
+    prev = a;
+    a->seq = i;
+    a->length = p->length;
+    a->weight = p->weight;
+    a->next = NULL;
+    p = p->next;
+  }
+  
+  /*if (na != 0) {
+    printf("Copy array a\n");
+    printf("na:%d\n", na);
+    a = head_person(a);
+    for(unsigned int i = 0; i < na; i++){
+      printf("%d : %f\n", a->seq, a->length);
+      if(a->next != NULL) {
+        a = a->next;
+      } else {
+        break;
+      }
+    }
+  }*/
+
+
+  prev = NULL;
+  for(unsigned int i = 0; i < nb; i++) {
+    t = (struct person*)malloc(sizeof(struct person) * 1);
+    b = initialize(t);
+    // リストの先頭要素を取得
+    if(i == 0){
+      b->prev = NULL;
+    }
+    if(prev){
+      b->prev = prev;
+      prev->next = b;
+    }
+    prev = b;
+    b->seq = i;
+    b->length = p->length;
+    b->weight = p->weight;
+    b->next = NULL;
+    if(p->next != NULL){
+      p = p->next;
+    }
+  }
+
+  /*printf("Copy array b\n");
+  printf("nb:%d\n", nb);
+  b = head_person(b);
+  for(unsigned int i = 0; i < nb; i++){
+    printf("%d : %f\n", b->seq, b->length);
+    if(b->next != NULL) {
+      b = b->next;
+    } else {
+      break;
+    }
+  }*/
+
+  // 再帰
+  p = head_person(p);
+  a = head_person(a);
+  b = head_person(b);
+  a = m_sort(a ,prefix);
+  b = m_sort(b ,prefix);
+
+  // 比較->マージ
+  p = head_person(p);
+  a = head_person(a);
+  b = head_person(b);
+  tmp_a = a;
+  tmp_b = b;
+  //printf("num : %d\n", n);
+  for(unsigned int i = 0; i < n; i++) {
+    //printf("index : %d\n", i);
+    switch (prefix){
+      case CODE_LENGTH:
+        if(tmp_b == NULL || tmp_a != NULL && (tmp_b->length > tmp_a->length)) {
+          p->length = tmp_a->length;
+          p->weight = tmp_a->weight;
+          if(tmp_a->next != NULL){
+            tmp_a = tmp_a->next;
+          } else {
+            tmp_a->length = 9999;
+          }
+        } else {
+          p->length = tmp_b->length;
+          p->weight = tmp_b->weight;
+          if(tmp_b->next != NULL){
+            tmp_b = tmp_b->next;
+          } else {
+            tmp_b->length = 9999;
+          }
+        }
+        break;
+      case CODE_WEIGHT:
+        if(tmp_b == NULL || tmp_a != NULL && (tmp_b->weight > tmp_a->weight)) {
+          p->length = tmp_a->length;
+          p->weight = tmp_a->weight;
+          if(tmp_a->next != NULL){
+            tmp_a = tmp_a->next;
+          } else {
+            tmp_a->weight = 9999;
+          }
+        } else {
+          p->length = tmp_b->length;
+          p->weight = tmp_b->weight;
+          if(tmp_b->next != NULL){
+            tmp_b = tmp_b->next;
+          } else {
+            tmp_b->weight = 9999;
+          }
+        }
+        break;
+    }
+    if (p->next != NULL){
+      p = p->next;
+    } else {
+      break;
+    }
+  }
+
+  /*printf("Sorted array a %d\n", na);
+  a = head_person(a);
+  for (unsigned int i = 0; i < na; i++) {
+    printf("%d -> %f\n", a->seq, a->length);
+    if(a->next) {
+      a = a->next;
+    } else {
+      break;
+    }
+  }
+
+  printf("Sorted array b %d\n", nb);
+  b = head_person(b);
+  for (unsigned int i = 0; i < nb; i++) {
+    printf("%d -> %f\n", b->seq, b->length);
+    if(b->next) {
+      b = b->next;
+    } else {
+      break;
+    }
+  }
+
+  printf("Sorted array p %d\n", n);
+  p = head_person(p);
+  for (unsigned int i = 0; i < n; i++) {
+    printf("%d -> %f\n", p->seq, p->length);
+    if(p->next) {
+      p = p->next;
+    } else {
+      break;
+    }
+  }*/
+  
+  // ダミーの構造体を破棄する
+  a = head_person(a);
+  b = head_person(b);
+  p = head_person(p);
+
+  del_person_array(head_person(a));
+  del_person_array(head_person(b));
+  
+  return p;
+}
+
+

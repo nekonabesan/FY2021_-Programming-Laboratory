@@ -83,9 +83,8 @@ TEST_F(fixtureName, init_data)
   t = t->next;
   EXPECT_NEAR(t->length, 179.0, 0.0);
   EXPECT_NEAR(t->weight, 62.0, 0.0);
-
-
-  EXPECT_TRUE(del_person_array(t));
+  // メモリ解放
+  EXPECT_TRUE(del_person_array(head_person(t)));
 }
 
 TEST_F(fixtureName, b_sort01)
@@ -137,4 +136,112 @@ TEST_F(fixtureName, b_sort01)
   t = t->next;
   EXPECT_NEAR(t->length, 182.0, 0.0);
   EXPECT_NEAR(t->weight, 69.0, 0.0);
+  // メモリ解放
+  EXPECT_TRUE(del_person_array(head_person(t)));
+}
+
+TEST_F(fixtureName, c_sort01)
+{
+  struct person *t = NULL;
+  const char *path = "../../data/data01_01.csv";
+  t = init_data(path);
+  t = m_sort(t, CODE_LENGTH);
+  // Case01
+  EXPECT_NEAR(t->length, 159.0, 0.0);
+  EXPECT_NEAR(t->weight, 60.0, 0.0);
+  // Case02
+  t = t->next;
+  EXPECT_NEAR(t->length, 162.0, 0.0);
+  EXPECT_NEAR(t->weight, 55.0, 0.0);
+  // Case03
+  t = t->next;
+  EXPECT_NEAR(t->length, 166.0, 0.0);
+  EXPECT_NEAR(t->weight, 57.0, 0.0);
+  // Case04
+  t = t->next;
+  EXPECT_NEAR(t->length, 168.0, 0.0);
+  EXPECT_NEAR(t->weight, 56.0, 0.0);
+  // Case05
+  t = t->next;
+  EXPECT_NEAR(t->length, 168.0, 0.0);
+  EXPECT_NEAR(t->weight, 60.0, 0.0);
+  // Case06
+  t = t->next;
+  EXPECT_NEAR(t->length, 171.0, 0.0);
+  EXPECT_NEAR(t->weight, 65.0, 0.0);
+  // Case07
+  t = t->next;
+  EXPECT_NEAR(t->length, 174.0, 0.0);
+  EXPECT_NEAR(t->weight, 72.0, 0.0);
+  // Case08
+  t = t->next;
+  EXPECT_NEAR(t->length, 175.0, 0.0);
+  EXPECT_NEAR(t->weight, 61.0, 0.0);
+  // Case09
+  t = t->next;
+  EXPECT_NEAR(t->length, 176.0, 0.0);
+  EXPECT_NEAR(t->weight, 66.0, 0.0);
+  // Case10
+  t = t->next;
+  EXPECT_NEAR(t->length, 179.0, 0.0);
+  EXPECT_NEAR(t->weight, 62.0, 0.0);
+  // Case11
+  t = t->next;
+  EXPECT_NEAR(t->length, 182.0, 0.0);
+  EXPECT_NEAR(t->weight, 69.0, 0.0);
+  // メモリ解放
+  EXPECT_TRUE(del_person_array(head_person(t)));
+}
+
+TEST_F(fixtureName, c_sort02)
+{
+  struct person *t = NULL;
+  const char *path = "../../data/data01_01.csv";
+  t = init_data(path);
+  t = m_sort(t, CODE_WEIGHT);
+  // Case01
+  EXPECT_NEAR(t->length, 162.0, 0.0);
+  EXPECT_NEAR(t->weight, 55.0, 0.0);
+  // Case02
+  t = t->next;
+  EXPECT_NEAR(t->length, 168.0, 0.0);
+  EXPECT_NEAR(t->weight, 56.0, 0.0);
+  // Case03
+  t = t->next;
+  EXPECT_NEAR(t->length, 166.0, 0.0);
+  EXPECT_NEAR(t->weight, 57.0, 0.0);
+  // Case04
+  t = t->next;
+  EXPECT_NEAR(t->length, 159.0, 0.0);
+  EXPECT_NEAR(t->weight, 60.0, 0.0);
+  // Case05
+  t = t->next;
+  EXPECT_NEAR(t->length, 168.0, 0.0);
+  EXPECT_NEAR(t->weight, 60.0, 0.0);
+  // Case06
+  t = t->next;
+  EXPECT_NEAR(t->length, 175.0, 0.0);
+  EXPECT_NEAR(t->weight, 61.0, 0.0);
+  // Case07
+  t = t->next;
+  EXPECT_NEAR(t->length, 179.0, 0.0);
+  EXPECT_NEAR(t->weight, 62.0, 0.0);
+  // Case08
+  t = t->next;
+  EXPECT_NEAR(t->length, 171.0, 0.0);
+  EXPECT_NEAR(t->weight, 65.0, 0.0);
+  // Case09
+  t = t->next;
+  EXPECT_NEAR(t->length, 176.0, 0.0);
+  EXPECT_NEAR(t->weight, 66.0, 0.0);
+  // Case10
+  t = t->next;
+  EXPECT_NEAR(t->length, 182.0, 0.0);
+  EXPECT_NEAR(t->weight, 69.0, 0.0);
+  // Case11
+  t = t->next;
+  EXPECT_NEAR(t->length, 174.0, 0.0);
+  EXPECT_NEAR(t->weight, 72.0, 0.0);
+  // メモリ解放
+  EXPECT_TRUE(del_person_array(head_person(t)));
 }

@@ -14,5 +14,6 @@ struct person * eol_person(struct person *pos);
 bool del_person_array(struct person *p);
 struct person* init_data(const char* path);
 struct person* b_sort(struct person *p, unsigned int prefix);
+struct person* m_sort(struct person *p, unsigned int prefix);
 
 #endif /* _TARGET_H_ */
