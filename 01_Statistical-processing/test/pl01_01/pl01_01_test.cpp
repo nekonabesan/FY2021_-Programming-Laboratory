@@ -3,7 +3,7 @@
 // テスト対象関数を呼び出せるようにするのだが
 // extern "C"がないとCと解釈されない、意外とハマりがち。
 extern "C" {
-  #include "../pl01_target.h"
+  #include "../pl01_01_target.h"
 }
 
 // fixtureNameはテストケース群をまとめるグループ名と考えればよい、任意の文字列
