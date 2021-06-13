@@ -237,19 +237,19 @@ TEST_F(fixtureName, max_min_parson_01)
   struct person *t = NULL;
   const char *path = "../../data/data01_01.csv";
   t = init_data(path);
-  // case 01
+  // case 01 身長の最大値をテスト
   t = head_person(t);
   t = max_min_parson(t, CODE_MAX, CODE_LENGTH);
   EXPECT_NEAR(t->length, 182.0, 0.0);
-  // case 02
+  // case 02 身長の最小値をテスト
   t = head_person(t);
   t = max_min_parson(t, CODE_MIN, CODE_LENGTH);
   EXPECT_NEAR(t->length, 159.0, 0.0);
-  // case 03
+  // case 03 体重の最大値をテスト
   t = head_person(t);
   t = max_min_parson(t, CODE_MAX, CODE_WEIGHT);
   EXPECT_NEAR(t->weight, 72.0, 0.0);
-  // case 04
+  // case 04 体重の最小値をテスト
   t = head_person(t);
   t = max_min_parson(t, CODE_MIN, CODE_WEIGHT);
   EXPECT_NEAR(t->weight, 55.0, 0.0);
@@ -263,11 +263,11 @@ TEST_F(fixtureName, avg_parson_01)
   const char *path = "../../data/data01_01.csv";
   double avg = 0.0;
   t = init_data(path);
-  // case 01
+  // case 01 身長の平均値をテスト
   t = head_person(t);
   avg = avg_parson(t, CODE_LENGTH);
   EXPECT_NEAR(avg, 170.090, 0.01);
-  // case 02
+  // case 02 体重の平均値をテスト
   t = head_person(t);
   avg = avg_parson(t, CODE_WEIGHT);
   EXPECT_NEAR(avg, 62.090, 0.01);
@@ -281,11 +281,11 @@ TEST_F(fixtureName, med_parson_01)
   const char *path = "../../data/data01_01.csv";
   double med = 0.0;
   t = init_data(path);
-  // case 01
+  // case 01 身長の中央値をテスト
   t = head_person(t);
   med = med_parson(t, CODE_LENGTH);
   EXPECT_NEAR(med, 171.0, 0.0);
-  // case 02
+  // case 02 体重の中央値をテスト
   t = head_person(t);
   med = med_parson(t, CODE_WEIGHT);
   EXPECT_NEAR(med, 61.0, 0.0);
@@ -299,11 +299,11 @@ TEST_F(fixtureName, std_dev_parson_01)
   const char *path = "../../data/data01_01.csv";
   double std_dev = 0.0;
   t = init_data(path);
-  // case 01
+  // case 01 身長の標準偏差をテスト
   t = head_person(t);
   std_dev = std_dev_parson(t, CODE_LENGTH);
   EXPECT_NEAR(std_dev, 6.761583266, 0.1);
-  // case 02
+  // case 02 体重の標準偏差をテスト
   t = head_person(t);
   std_dev = std_dev_parson(t, CODE_WEIGHT);
   EXPECT_NEAR(std_dev, 5.160242162, 0.1);
@@ -317,7 +317,7 @@ TEST_F(fixtureName, correlation_coefficient_parson_01)
   const char *path = "../../data/data01_01.csv";
   double correlation_coefficient = 0.0;
   t = init_data(path);
-  // case 01
+  // case 01 相関係数をテスト
   correlation_coefficient = correlation_coefficient_parson(t);
   EXPECT_NEAR(correlation_coefficient, 0.675057872, 0.1);
 }

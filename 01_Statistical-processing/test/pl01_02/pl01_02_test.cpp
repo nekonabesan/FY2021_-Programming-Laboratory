@@ -82,35 +82,35 @@ TEST_F(fixtureName, calc_bmi_02)
     const char *path = "../../data/data01_02.csv";
     t = init_data(path);
     t = head_person(t);
-    // Case01    
+    // Case01 低体重
     bmi = calc_bmi(t->length, t->weight);
     EXPECT_EQ(bmi, UNDER_WEIGHT);
     t = t->next;
-    // Case02
+    // Case02 低体重
     bmi = calc_bmi(t->length, t->weight);
     EXPECT_EQ(bmi, UNDER_WEIGHT);
     t = t->next;
-    // Case03
+    // Case03 標準
     bmi = calc_bmi(t->length, t->weight);
     EXPECT_EQ(bmi, STD_WEIGHT);
     t = t->next;
-    // Case04
+    // Case04 標準
     bmi = calc_bmi(t->length, t->weight);
     EXPECT_EQ(bmi, STD_WEIGHT);
     t = t->next;
-    // Case05
+    // Case05 肥満
     bmi = calc_bmi(t->length, t->weight);
     EXPECT_EQ(bmi, OBESITY_WEIGHT);
     t = t->next;
-    // Case06
+    // Case06 肥満
     bmi = calc_bmi(t->length, t->weight);
     EXPECT_EQ(bmi, OBESITY_WEIGHT);
     t = t->next;
-    // Case07
+    // Case07 高度肥満
     bmi = calc_bmi(t->length, t->weight);
     EXPECT_EQ(bmi, HEGH_OBESITY_WEIGHT);
     t = t->next;
-    // Case08
+    // Case08 高度肥満
     bmi = calc_bmi(t->length, t->weight);
     EXPECT_EQ(bmi, HEGH_OBESITY_WEIGHT);
     // メモリ解放

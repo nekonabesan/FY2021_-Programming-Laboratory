@@ -60,6 +60,7 @@ struct person * person_clear(int length) {
       start = t;
       t->prev = NULL;
     }
+    // 構造体を初期化
     t = initialize(t);
     if(prev){
       t->prev = prev;
@@ -153,13 +154,13 @@ struct person* init_data(const char* path) {
   }
 
   while((ret=fscanf(fp, "%lf,%lf,%lf", &data[0], &data[1], &data[2])) != EOF){
-    //printf("%lf %lf %lf\n", data[0], data[1], data[2]);
     t = (struct person*)malloc(sizeof(struct person) * 1);
     // リストの先頭要素を取得
     if(seq == 0){
       start = t;
       t->prev = NULL;
     }
+    // 構造体を初期化
     t = initialize(t);
     if(prev){
       t->prev = prev;
@@ -187,10 +188,6 @@ struct person* init_data(const char* path) {
 struct person* b_sort(struct person *p, unsigned int control_code) {
   struct person* t = head_person(p);
   struct person* c = NULL;
-
-  /*if(t->seq == NULL) {
-    return p;
-  }*/
 
   // 変数を初期化
   struct person* next = t->next;
@@ -275,10 +272,7 @@ struct person* m_sort(struct person *p, unsigned int control_code){
     nb = (n / 2) + (n % 2);
   }
   
-  /*printf("n:%d\n", n);
-  printf("na:%d\n", na);
-  printf("nb:%d\n", nb);*/
-  
+  // 一時領域を初期化する
   struct person* a = (struct person*)malloc(sizeof(struct person) * na);
   struct person* b = (struct person*)malloc(sizeof(struct person) * nb);
 
@@ -302,21 +296,6 @@ struct person* m_sort(struct person *p, unsigned int control_code){
     p = p->next;
   }
   
-  /*if (na != 0) {
-    printf("Copy array a\n");
-    printf("na:%d\n", na);
-    a = head_person(a);
-    for(unsigned int i = 0; i < na; i++){
-      printf("%d : %f\n", a->seq, a->length);
-      if(a->next != NULL) {
-        a = a->next;
-      } else {
-        break;
-      }
-    }
-  }*/
-
-
   prev = NULL;
   for(unsigned int i = 0; i < nb; i++) {
     t = (struct person*)malloc(sizeof(struct person) * 1);
@@ -339,18 +318,6 @@ struct person* m_sort(struct person *p, unsigned int control_code){
     }
   }
 
-  /*printf("Copy array b\n");
-  printf("nb:%d\n", nb);
-  b = head_person(b);
-  for(unsigned int i = 0; i < nb; i++){
-    printf("%d : %f\n", b->seq, b->length);
-    if(b->next != NULL) {
-      b = b->next;
-    } else {
-      break;
-    }
-  }*/
-
   // 再帰
   p = head_person(p);
   a = head_person(a);
@@ -364,9 +331,7 @@ struct person* m_sort(struct person *p, unsigned int control_code){
   b = head_person(b);
   tmp_a = a;
   tmp_b = b;
-  //printf("num : %d\n", n);
   for(unsigned int i = 0; i < n; i++) {
-    //printf("index : %d\n", i);
     switch (control_code){
       case CODE_LENGTH:
         if(tmp_b == NULL || tmp_a != NULL && (tmp_b->length > tmp_a->length)) {
@@ -413,47 +378,14 @@ struct person* m_sort(struct person *p, unsigned int control_code){
       break;
     }
   }
-
-  /*printf("Sorted array a %d\n", na);
-  a = head_person(a);
-  for (unsigned int i = 0; i < na; i++) {
-    printf("%d -> %f\n", a->seq, a->length);
-    if(a->next) {
-      a = a->next;
-    } else {
-      break;
-    }
-  }
-
-  printf("Sorted array b %d\n", nb);
-  b = head_person(b);
-  for (unsigned int i = 0; i < nb; i++) {
-    printf("%d -> %f\n", b->seq, b->length);
-    if(b->next) {
-      b = b->next;
-    } else {
-      break;
-    }
-  }
-
-  printf("Sorted array p %d\n", n);
-  p = head_person(p);
-  for (unsigned int i = 0; i < n; i++) {
-    printf("%d -> %f\n", p->seq, p->length);
-    if(p->next) {
-      p = p->next;
-    } else {
-      break;
-    }
-  }*/
   
-  // ダミーの構造体を破棄する
+  // 一時領域を破棄する
   a = head_person(a);
   b = head_person(b);
-  p = head_person(p);
-
   del_person_array(head_person(a));
   del_person_array(head_person(b));
+
+  p = head_person(p);
   
   return p;
 }

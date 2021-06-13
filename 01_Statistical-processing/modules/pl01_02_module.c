@@ -9,9 +9,10 @@ double calc_bmi(double length, double weight) {
     unsigned int bmi = 0;
     double tmp = 0.0;
 
+    // BMIを導出する
     tmp = (weight/pow((length/100.0), 2));
-    //printf("%f\n", tmp);
 
+    // 判定基準をパラメータへセットする
     if (tmp < 18.5) {
         bmi = UNDER_WEIGHT;
     } else if (18.5 <= tmp && tmp < 25.0) {
