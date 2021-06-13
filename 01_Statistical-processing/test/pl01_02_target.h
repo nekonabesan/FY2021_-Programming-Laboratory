@@ -39,6 +39,7 @@ double std_dev_parson(struct person* p, unsigned int control_code);
 double correlation_coefficient_parson(struct person* p);
 
 // 01_02
-double calc_bmi(double length, double weight);
+double derivation_bmi(double length, double weight);
+unsigned int calc_bmi(double length, double weight);
 
 #endif /* _TARGET_H_ */

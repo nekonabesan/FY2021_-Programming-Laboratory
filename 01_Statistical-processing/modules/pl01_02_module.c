@@ -5,12 +5,33 @@
 #define OBESITY_WEIGHT 2
 #define HEGH_OBESITY_WEIGHT 3
 
-double calc_bmi(double length, double weight) {
+//============================================================================//
+// BMIを計算する
+// @param double length
+// @param double weight
+// @return double bmi
+//============================================================================//
+double derivation_bmi(double length, double weight) {
+    double bmi = 0.0;
+
+    // BMIを導出する
+    bmi = (weight/pow((length/100.0), 2));
+
+    return bmi;
+}
+
+//============================================================================//
+// 課題2 肥満度を判定するプログラム
+// @param double length
+// @param double weight
+// @return double bmi
+//============================================================================//
+unsigned int calc_bmi(double length, double weight) {
     unsigned int bmi = 0;
     double tmp = 0.0;
 
     // BMIを導出する
-    tmp = (weight/pow((length/100.0), 2));
+    tmp = derivation_bmi(length, weight);
 
     // 判定基準をパラメータへセットする
     if (tmp < 18.5) {

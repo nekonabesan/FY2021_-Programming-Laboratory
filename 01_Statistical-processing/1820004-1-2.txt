@@ -1,0 +1,391 @@
+// ディレクトリ配置
+├── data/(身長体重CSVデータ)
+│   ├── data01_01.csv
+│   ├── data01_02.csv
+│   └── data01_02_02.csv
+├── modules/
+│   ├── pl01_01_module.c(課題1のメソッド)
+│   └── pl01_02_module.c(課題2のメソッド)
+├── pl01_01_main.c(課題1の画面に表示するプログラム)
+├── pl01_02_main.c(課題2の画面に表示するプログラム)
+└── test/
+    ├── pl01_01/(課題1のテスト)
+    │   ├── Makefile
+    │   ├── a.out
+    │   ├── gtest
+    │   │   ├── gtest-all.cc
+    │   │   └── gtest.h
+    │   ├── pl01_01_module.o
+    │   └── pl01_01_test.cpp
+    ├── pl01_01_target.h
+    ├── pl01_02/(課題2のテスト)
+    │   ├── Makefile
+    │   ├── a.out
+    │   ├── gtest
+    │   │   ├── gtest-all.cc
+    │   │   └── gtest.h
+    │   ├── pl01_01_module.o
+    │   ├── pl01_02_module.o
+    │   └── pl01_02_test.cpp
+    └── pl01_02_target.h
+
+// 実行環境
+Windows10のWSL1
+Ubuntu18.04LTS
+Python 3.6.9
+
+// GoogleTestについて
+ダウンロードについて
+(参考) https://qiita.com/shohirose/items/30e39949d8bf990b0462
+Cで掛かれたコードのテストについて
+(参考) https://qiita.com/igayu/items/9ff003309b237e9ae116
+
+Pythonをapt-get
+任意のディレクトリで以下を実行
+$ wget https://github.com/google/googletest/archive/release-1.10.0.tar.gz
+$ tar -zxvf release-1.10.0.tar.gz
+$ cd googletest-release-1.10.0
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make && make install
+テストコードの配置されたディレクトリ「test/pl01_01」で
+$ make gtest-gen
+「test/pl01_01/gtest」が生成される
+「pl01_01」ディレクトリでmakeするとテストが実行される.
+
+
+/**
+ * データファイル
+ * */
+ // data/data01_01.csv
+//--------------------------------ここから--------------------------------------//
+1,168,60
+2,162,55
+3,171,65
+4,159,60
+5,174,72
+6,166,57
+7,175,61
+8,176,66
+9,168,56
+10,182,69
+11,179,62
+//--------------------------------ここまで--------------------------------------//
+
+// data/data01_02.csv
+//--------------------------------ここから--------------------------------------//
+1,175,55
+2,175,56
+3,175,57
+4,155,60
+5,168,71
+6,175,91
+7,175,92
+8,171,98
+//--------------------------------ここまで--------------------------------------//
+
+// data/data01_02_02.csv
+//--------------------------------ここから--------------------------------------//
+1,170,50
+2,170,65
+3,170,80
+4,170,95
+//--------------------------------ここまで--------------------------------------//
+
+/**
+ * 課題1
+ * */
+// modules/pl01_02_module.c(課題2のメソッド)
+//--------------------------------ここから--------------------------------------//
+#include "pl01_01_module.c"
+
+#define UNDER_WEIGHT 0
+#define STD_WEIGHT 1
+#define OBESITY_WEIGHT 2
+#define HEGH_OBESITY_WEIGHT 3
+
+//============================================================================//
+// BMIを計算する
+// @param double length
+// @param double weight
+// @return double bmi
+//============================================================================//
+double derivation_bmi(double length, double weight) {
+    double bmi = 0.0;
+
+    // BMIを導出する
+    bmi = (weight/pow((length/100.0), 2));
+
+    return bmi;
+}
+
+//============================================================================//
+// 課題2 肥満度を判定するプログラム
+// @param double length
+// @param double weight
+// @return double bmi
+//============================================================================//
+unsigned int calc_bmi(double length, double weight) {
+    unsigned int bmi = 0;
+    double tmp = 0.0;
+
+    // BMIを導出する
+    tmp = derivation_bmi(length, weight);
+
+    // 判定基準をパラメータへセットする
+    if (tmp < 18.5) {
+        bmi = UNDER_WEIGHT;
+    } else if (18.5 <= tmp && tmp < 25.0) {
+        bmi = STD_WEIGHT;
+    } else if (25.0 <= tmp && tmp < 30.0) {
+        bmi = OBESITY_WEIGHT;
+    } else if (30 <= tmp) {
+        bmi = HEGH_OBESITY_WEIGHT;
+    }
+
+    return bmi;
+}
+//--------------------------------ここまで--------------------------------------//
+
+// test/pl01_01/Makefile
+//--------------------------------ここから--------------------------------------//
+# Makefile
+# all:より下の3行のインデント、
+# gtest-gen:より下の1行のインデント
+# は半角空白になっていますがタブ1個にしてください
+# target.cはCなのでgccで、それ以外はC++なのでg++でビルドします
+# gtest_main.ccはGoogleTestが用意してくれているmain関数、
+# gtest-all.ccがGoogleTest全部入りファイルです
+# -lpthreadをつけることにも注意。
+# makeかmake allしたらビルドして実行まで行います。
+all:
+			gcc -c ../../modules/pl01_02_module.c
+			g++ pl01_02_test.cpp ../../../vender/googletest/googletest/src/gtest_main.cc gtest/gtest-all.cc -I. -lpthread pl01_02_module.o
+			./a.out
+gtest-gen:
+			python ../../../vender/googletest/googletest/scripts/fuse_gtest_files.py ./
+clean:
+
+			rm -f ./a.out
+			rm -f ./pl01_02_module.o
+//--------------------------------ここまで--------------------------------------//
+
+// test/pl01_01/pl01_01_test.cpp
+//--------------------------------ここから--------------------------------------//
+// テストケース記述ファイル
+#include "gtest/gtest.h" // googleTestを使用するおまじないはこれだけでOK
+// テスト対象関数を呼び出せるようにするのだが
+// extern "C"がないとCと解釈されない、意外とハマりがち。
+extern "C" {
+    #include "../pl01_02_target.h"
+}
+
+// fixtureNameはテストケース群をまとめるグループ名と考えればよい、任意の文字列
+// それ以外のclass～testing::Testまではおまじないと考える
+class fixtureName : public ::testing::Test {
+protected:
+    // fixtureNameでグループ化されたテストケースはそれぞれのテストケース実行前に
+    // この関数を呼ぶ。共通の初期化処理を入れておくとテストコードがすっきりする
+    virtual void SetUp(){
+    }
+    // SetUpと同様にテストケース実行後に呼ばれる関数。共通後始末を記述する。
+    virtual void TearDown(){
+    }
+};
+
+// 成功するテストケース。細かい説明はGoogleTestのマニュアルを見てね。
+// char mystrlen(char s[]);
+TEST_F(fixtureName, calc_bmi_01)
+{
+    struct person *t = NULL;
+    unsigned int bmi = 0;
+    const char *path = "../../data/data01_01.csv";
+    t = init_data(path);
+    t = head_person(t);
+    // Case01    
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, STD_WEIGHT);
+    t = t->next;
+    // Case02
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, STD_WEIGHT);
+    t = t->next;
+    // Case03
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, STD_WEIGHT);
+    t = t->next;
+    // Case04
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, STD_WEIGHT);
+    t = t->next;
+    // Case05
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, STD_WEIGHT);
+    t = t->next;
+    // Case06
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, STD_WEIGHT);
+    t = t->next;
+    // Case07
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, STD_WEIGHT);
+    t = t->next;
+    // Case08
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, STD_WEIGHT);
+    t = t->next;
+    // Case09
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, STD_WEIGHT);
+    t = t->next;
+    // Case10
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, STD_WEIGHT);
+    t = t->next;
+    // Case11
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, STD_WEIGHT);
+    // メモリ解放
+    EXPECT_TRUE(del_person_array(head_person(t)));
+}
+
+TEST_F(fixtureName, calc_bmi_02)
+{
+    struct person *t = NULL;
+    unsigned int bmi = 0;
+    const char *path = "../../data/data01_02.csv";
+    t = init_data(path);
+    t = head_person(t);
+    // Case01 低体重
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, UNDER_WEIGHT);
+    t = t->next;
+    // Case02 低体重
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, UNDER_WEIGHT);
+    t = t->next;
+    // Case03 標準
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, STD_WEIGHT);
+    t = t->next;
+    // Case04 標準
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, STD_WEIGHT);
+    t = t->next;
+    // Case05 肥満
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, OBESITY_WEIGHT);
+    t = t->next;
+    // Case06 肥満
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, OBESITY_WEIGHT);
+    t = t->next;
+    // Case07 高度肥満
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, HEGH_OBESITY_WEIGHT);
+    t = t->next;
+    // Case08 高度肥満
+    bmi = calc_bmi(t->length, t->weight);
+    EXPECT_EQ(bmi, HEGH_OBESITY_WEIGHT);
+    // メモリ解放
+    EXPECT_TRUE(del_person_array(head_person(t)));
+}
+//--------------------------------ここまで--------------------------------------//
+
+// test/pl01_02_target.h
+//--------------------------------ここから--------------------------------------//
+// テスト対象関数のプロトタイプ宣言
+#ifndef _TARGET_H_
+#define _TARGET_H_
+
+#define MAX 10000
+#define CODE_ZERO_EXCEPTION 0x
+#define CODE_LENGTH 1
+#define CODE_WEIGHT 2
+#define CODE_MAX 1
+#define CODE_MIN 2
+
+#define UNDER_WEIGHT 0
+#define STD_WEIGHT 1
+#define OBESITY_WEIGHT 2
+#define HEGH_OBESITY_WEIGHT 3
+
+struct person {
+  unsigned int seq;
+  double length;
+  double weight;
+  struct person *prev;
+  struct person *next;
+};
+
+// 01_01
+struct person * writeperson(struct person* t, unsigned int seq, double length, double weight);
+struct person * initialize(struct person *t);
+struct person * person_clear(int length);
+struct person * head_person(struct person *pos);
+struct person * eol_person(struct person *pos);
+bool del_person_array(struct person *p);
+struct person* init_data(const char* path);
+struct person* b_sort(struct person *p, unsigned int control_code);
+struct person* m_sort(struct person *p, unsigned int control_code);
+struct person* max_min_parson(struct person* p, unsigned int max_min_code, unsigned int control_code);
+double avg_parson(struct person* p, unsigned int control_code);
+double med_parson(struct person* p, unsigned int control_code);
+double std_dev_parson(struct person* p, unsigned int control_code);
+double correlation_coefficient_parson(struct person* p);
+
+// 01_02
+double derivation_bmi(double length, double weight);
+unsigned int calc_bmi(double length, double weight);
+
+#endif /* _TARGET_H_ */
+//--------------------------------ここまで--------------------------------------//
+
+// pl01_02_main.c(課題2の画面に表示するプログラム)
+//--------------------------------ここから--------------------------------------//
+#include "modules/pl01_02_module.c"
+
+bool main(void) {
+    struct person *t = NULL;
+    const char *path = "./data/data01_02_02.csv";
+    unsigned int max = 0;
+
+    t = init_data(path);
+    t = head_person(t);
+
+    t= eol_person(t);
+    max = t->seq;
+
+    t = head_person(t);
+    for(unsigned int i = 0; i <= max; i++) {
+        printf("length : %f, weight : %f ,BMI rate : %f ", t->length, t->weight, derivation_bmi(t->length, t->weight));
+        switch (calc_bmi(t->length, t->weight))
+        {
+        case UNDER_WEIGHT:
+            printf(" -> Underweight\n");
+            break;
+        case STD_WEIGHT:
+            printf(" -> standard\n");
+            break;
+        case OBESITY_WEIGHT:
+            printf(" -> obesity\n");
+            break;
+        case HEGH_OBESITY_WEIGHT:
+            printf(" -> Severe obesity\n");
+            break;
+        default:
+            break;
+        }
+
+        if(t->next != NULL) {
+            t = t->next;
+        }
+    }
+ 
+    // メモリ解放
+    del_person_array(head_person(t));
+
+    return true;
+}
+//--------------------------------ここまで--------------------------------------//
