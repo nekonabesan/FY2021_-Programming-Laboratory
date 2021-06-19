@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
+#include <time.h>
 #include "../01_Statistical-processing/modules/pl01_01_module.c"
 
 //--------------------------------------------------------------//
@@ -179,11 +180,6 @@ double calc_b(struct person *p, unsigned int x_axis) {
   p = head_person(p);
   s1 = round(calc_S1(p) * 10000);
   b = (((avg_y * s2) - (avg_x * s1))/(s2 - pow(avg_x, 2)));
-  printf("s1 : %ld\n", s1);
-  printf("s2 : %ld\n", s2);
-  printf("avg_x : %ld\n", avg_x);
-  printf("avg_y : %ld\n", avg_y);
-  printf("b : %f\n", b);
 
   p = head_person(p);
 
