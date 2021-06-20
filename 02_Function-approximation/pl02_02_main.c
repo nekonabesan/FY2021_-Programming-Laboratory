@@ -1,6 +1,8 @@
 #include "../modules/pl02_01_module.c"
+// 課題(2)4.より繰り返し回数を100回とする
 #define MAX_COUNT 100
-#define randDouble ((double)rand()+1.0)/((double)RAND_MAX+2.0) // 0以上1未満の実数値の乱数を生成
+// 0以上1未満の実数値の乱数を生成
+#define randDouble ((double)rand()+1.0)/((double)RAND_MAX+2.0) 
 
 //============================================================================//
 // genertate-data.cより移植
@@ -34,7 +36,7 @@ bool generete_data(unsigned int max, const char* path) {
         return false;
     }
 
-    // データを生成する
+    // データ対を生成する
     for(unsigned int i = 0; i < max; i++){
         x = randDouble * 10.0;
         e = rand_normal(0, 1);
@@ -49,7 +51,8 @@ bool generete_data(unsigned int max, const char* path) {
 }
 
 //============================================================================//
-// 課題(2)
+// 課題(2)のmain関数
+// generete_data.cの処理を100回繰り返す
 // @paramu int argc
 // @param char *argv[]
 // @return bool 
@@ -64,7 +67,7 @@ bool main(int argc, char *argv[]) {
     double rand_double = 0.0;
     FILE *file;
 
-    // 引数が未定義の場合、データ数の上限値を100で初期化する
+    // 引数が未定義の場合、データ数の上限値を100対で初期化する
     if(argv[1] == NULL || strlen(argv[1]) == 0) {
         max = 100;
     } else {
@@ -84,15 +87,16 @@ bool main(int argc, char *argv[]) {
         srand((unsigned int)time(NULL) + i);
         rand();
 
-        // genertate-dataでデータを生成する
+        // genertate-dataでデータ対を生成する
         generete_data(max, tmp_file_path);
 
-        // 構造体を初期化
+        // 一時ファイルを読み込み構造体を初期化
         t = init_data(tmp_file_path);
 
-        // 傾きと切片を導出する
+        // 課題(1)で提出済みの関数calc_aによりデータ対から傾きを導出する
         t = head_person(t);
         a = calc_a(t, CODE_LENGTH);
+        // 課題(1)で提出済みの関数calc_bによりデータ対から切片を導出する
         t = head_person(t);
         b = calc_b(t, CODE_LENGTH);
 
