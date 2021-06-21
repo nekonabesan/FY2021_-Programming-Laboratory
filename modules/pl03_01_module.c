@@ -1,5 +1,15 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <math.h>
+
+#define EPSILON 0.000000000001
+#define NMAX 1000000000000
+
 struct answer {
     unsigned int seq;
+    double x;
     double y;
     struct answer *prev;
     struct answer *next;
