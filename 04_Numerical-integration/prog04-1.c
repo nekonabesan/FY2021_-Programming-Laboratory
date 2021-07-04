@@ -44,11 +44,12 @@ bool main(void) {
 
     y = y * (h / 2);
 
-    printf("Anser of Q1 %lf\n", y);
+    printf("Anser of S1 %lf\n", y);
 
     /**
      * g(x)の導出過程
      * */
+    y = 0.0;
     sp = 0.0;
     end = 1.0;
     sep = (end - sp)/SEPARATE_N;
@@ -65,7 +66,7 @@ bool main(void) {
 
     y = y * (h / 2);
 
-    printf("Anser of Q2 %lf\n", y);
+    printf("Anser of S2 %lf\n", y);
 
 
     return true;
