@@ -1,5 +1,8 @@
 #include "modules/pl01_02_module.c"
 
+/**
+ * 課題(2)
+ * */
 bool main(void) {
     struct person *t = NULL;
     const char *path = "./data/data01_02_02.csv";
