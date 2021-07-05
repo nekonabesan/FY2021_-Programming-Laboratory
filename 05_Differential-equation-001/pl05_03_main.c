@@ -43,7 +43,6 @@ bool main(void) {
 		k_2 = dt * f(x + k_1/2.0);
         x += k_2;
         t += dt;
-        //printf("%lf\n", k_1);
         fprintf(tmp_file, "%lf,%.20f\n", t, x);
     } while (t < MAX);
 

@@ -15,6 +15,12 @@ double g(double t) {
     return exp(t);
 }
 
+/**
+ * 例題5
+ * 以下の常微分方程式を4次ルンゲクッタ法で解くプログラムを作成する
+ * 数値積分の間隔はdt=0.1として、t=10まで計算する
+ * 計算して得られた値の相対誤差を求める
+ * */
 bool main(void) {
     FILE *tmp_file;
     double x = 1.0;

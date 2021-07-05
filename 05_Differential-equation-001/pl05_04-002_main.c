@@ -16,7 +16,10 @@ double g(double t) {
 }
 
 /**
- * 2次ルンゲクッタ法
+ * 例題4(2次ルンゲクッタ法)
+ * 例題３で作成したプログラムを相対誤差Δxを出力するように変更する
+ * 数値積分の間隔はdt=0.1, 0.025として、t=10まで計算する
+ * 時間があれば時間刻みを変更して誤差の振る舞いを確認する
  * */
 bool main(void) {
     FILE *tmp_file;
@@ -47,7 +50,6 @@ bool main(void) {
         x += k_2;
         t += dt;
         d_x = (g(t) - x)/g(t);
-        //printf("%.20f\n", d_x);
         fprintf(tmp_file, "%lf,%.20f\n", t, d_x);
     } while (t < MAX);
 
