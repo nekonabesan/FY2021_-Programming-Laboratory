@@ -3,9 +3,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
+#include <float.h>
 
-
-#define N 40.0
 #define MAX 10.0
 
 /**
@@ -19,11 +18,8 @@ bool main(void) {
     FILE *tmp_file;
     double x = 1.0;
     double t = 0.0;
-    double dt = 0.0;
+    double dt = 0.025;
     const char *path = "data/pl05_02.csv";
-
-    dt = 1/N;
-    printf("N : %lf\n", dt);
 
     // 一時ファイルを開く
     tmp_file = fopen(path, "w");
@@ -32,11 +28,11 @@ bool main(void) {
         return false;
     }
 
-    while (t < MAX) {
+    while ((FLT_EPSILON  * fmax(1, fmax(fabs(MAX), fabs(t)))) < fabs(MAX - t)) {
         t += dt;
         x += (x * dt);
         //printf("%lf %lf\n", t, x);
-        fprintf(tmp_file, "%lf,%lf\n", t, x);
+        fprintf(tmp_file, "%6f,%6f,%6f\n", t, x, exp(t));
     }
     
     // 一時ファイルを閉じる

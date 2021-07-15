@@ -85,9 +85,9 @@ struct person * head_person(struct person *pos) {
     struct person *head = pos->prev;
     while(1){
         if(head->prev){
-        head = head->prev;
+            head = head->prev;
         } else {
-        break;
+            break;
         }
     }
     return head;
@@ -105,9 +105,9 @@ struct person * eol_person(struct person *pos) {
     struct person *next = pos->next;
     while(1){
         if(next->next != NULL){
-        next = next->next;
+            next = next->next;
         } else {
-        break;
+            break;
         }
     }
     return next;
@@ -123,9 +123,13 @@ bool del_person_array(struct person *p) {
         return false;
     }
     struct person *pos = p;
-    while(pos->next){
-        pos = pos->next;
-        free(pos->prev);
+    while(1){
+        if(pos->next != NULL) {
+            pos = pos->next;
+            free(pos->prev);
+        } else {
+            break;
+        }
     }
     return true;
 }
@@ -424,7 +428,7 @@ double avg_parson(struct person* p, unsigned int control_code) {
     double avg = 0.0;
     double cnt = 0.0;
     p = head_person(p);
-    do {
+    while(1) {
         switch (control_code)
         {
         case CODE_LENGTH:
@@ -436,9 +440,11 @@ double avg_parson(struct person* p, unsigned int control_code) {
         }
         cnt++;
         if(p->next != NULL) {
-        p = p->next;
+            p = p->next;
+        } else {
+            break;
         }
-    } while(p->next != NULL);
+    }
 
     // 平均値を導出する
     avg = total/cnt;
@@ -461,14 +467,15 @@ double med_parson(struct person* p, unsigned int control_code) {
 
     // 構造体の要素数を数える
     p = head_person(p);
-    do {
+    while(1) {
         cnt++;
         if(p->next != NULL) {
-        p = p->next;
+            p = p->next;
+        } else {
+            break;
         }
-    } while (p->next != NULL);
-    cnt+=1;
-
+    }
+    
     // データを整列する
     p = head_person(p);
     p = m_sort(p, control_code);
@@ -480,35 +487,35 @@ double med_parson(struct person* p, unsigned int control_code) {
         max = cnt / 2;
         // 要素数が偶数の場合
         for (int i = 1; i <= max; i++) {
-        if (i == max){
-            switch (control_code) {
-            case CODE_LENGTH:
-                med = (p->length + p->next->length) / 2.0;
-                break;
-            case CODE_WEIGHT:
-                med = (p->weight + p->next->weight) / 2.0;
-                break;
+            if (i == max){
+                switch (control_code) {
+                case CODE_LENGTH:
+                    med = (p->length + p->next->length) / 2.0;
+                    break;
+                case CODE_WEIGHT:
+                    med = (p->weight + p->next->weight) / 2.0;
+                    break;
+                }
+            } else {
+                p = p->next;
             }
-        } else {
-            p = p->next;
-        }
         }
     } else {
         // 要素数が奇数の場合
         max = (cnt / 2) + 1;
         for (int i = 1; i <= max; i++) {
-        if (i == max){
-            switch (control_code) {
-            case CODE_LENGTH:
-                med = p->length;
-                break;
-            case CODE_WEIGHT:
-                med = p->weight;
-                break;
+            if (i == max){
+                switch (control_code) {
+                case CODE_LENGTH:
+                    med = p->length;
+                    break;
+                case CODE_WEIGHT:
+                    med = p->weight;
+                    break;
+                }
+            } else {
+                p = p->next;
             }
-        } else {
-            p = p->next;
-        }
         }
     }
     p = head_person(p);
@@ -534,17 +541,18 @@ double std_dev_parson(struct person* p, unsigned int control_code) {
 
     // 構造体の要素数を数える
     p = head_person(p);
-    do {
-        cnt++;
+    while(1) {
         if(p->next != NULL) {
-        p = p->next;
+            cnt++;
+            p = p->next;
+        } else {
+            break;
         }
-    } while (p->next != NULL);
-    cnt+=1;
+    }  
 
     // 標準偏差の導出
     p = head_person(p);
-    for (int i = 0; i < cnt; i++) {
+    for (int i = 0; i <= cnt; i++) {
         switch (control_code) {
         case CODE_LENGTH:
             total += pow(fabs(avg - p->length), 2);
@@ -554,14 +562,39 @@ double std_dev_parson(struct person* p, unsigned int control_code) {
             break;
         }
         if(p->next != NULL) {
-        p = p->next;
+            p = p->next;
         } else {
-        break;
+            break;
         }
     }
     std_dev = sqrt(total/cnt);
 
     return std_dev;
+}
+
+//--------------------------------------------------------------//
+// 身長の単位を(cm->m)へ変換する処理
+// @param struct person *p
+// @return struct person *p
+//--------------------------------------------------------------//
+struct person * from_cm_to_m_for_length(struct person* p) {
+    unsigned int max = 0;
+
+    // 要素数を取得
+    p = eol_person(p);
+    max = p->seq;
+
+    p = head_person(p);
+    for (unsigned int i = 0; i <= max; i++) {
+        p->length = p->length * 0.01;
+        if(p->next != NULL) {
+        p = p->next;
+        }
+    }
+
+    p = head_person(p);
+
+    return p;
 }
 
 //============================================================================//
@@ -588,13 +621,14 @@ double correlation_coefficient_parson(struct person* p) {
 
     // 構造体の要素数を数える
     p = head_person(p);
-    do {
-        cnt++;
+    while(1) {
         if(p->next != NULL) {
-        p = p->next;
+            cnt++;
+            p = p->next;
+        } else {
+            break;
         }
-    } while (p->next != NULL);
-    cnt+=1;
+    };
 
     // 標準偏差の導出
     p = head_person(p);
@@ -604,14 +638,14 @@ double correlation_coefficient_parson(struct person* p) {
 
     // 偏差積和の導出
     p = head_person(p);
-    for (int i = 0; i < cnt; i++) {
-        total_length = fabs(avg_length - p->length);
-        total_weight = fabs(avg_weight - p->weight);
+    for (int i = 0; i <= cnt; i++) {
+        total_length = p->length - avg_length;
+        total_weight = p->weight - avg_weight;
         total += (total_length * total_weight);
         if(p->next != NULL) {
-        p = p->next;
+            p = p->next;
         } else {
-        break;
+            break;
         }
     }
     p = head_person(p);
@@ -657,14 +691,14 @@ bool main(void) {
         t = (struct person*)malloc(sizeof(struct person) * 1);
         // リストの先頭要素を取得
         if(seq == 0){
-        start = t;
-        t->prev = NULL;
+            start = t;
+            t->prev = NULL;
         }
         // 構造体を初期化
         t = initialize(t);
         if(prev){
-        t->prev = prev;
-        prev->next = t;
+            t->prev = prev;
+            prev->next = t;
         }
         prev = t;
         t->seq = seq;
@@ -675,45 +709,49 @@ bool main(void) {
     }
     // データを配列から読み込む場合(ここまで)
 
+    // 身長の単位を(m)へ変換する
+    t = head_person(t);
+    t = from_cm_to_m_for_length(t);
+
     /**
      * 01 最大値と最小値
      * */
     // case 01 身長の最大値
     t = head_person(t);
     t = max_min_parson(t, CODE_MAX, CODE_LENGTH);
-    printf("max length : %f\n", t->length);
+    printf("max length : %f (m)\n", t->length);
     // case 02 身長の最小値
     t = head_person(t);
     t = max_min_parson(t, CODE_MIN, CODE_LENGTH);
-    printf("min length : %f\n", t->length);
+    printf("min length : %f (m)\n", t->length);
     // case 03 体重の最大値
     t = head_person(t);
     t = max_min_parson(t, CODE_MAX, CODE_WEIGHT);
-    printf("max weight :%f\n", t->weight);
+    printf("max weight :%f (kg)\n", t->weight);
     // case 04 体重の最小値
     t = head_person(t);
     t = max_min_parson(t, CODE_MIN, CODE_WEIGHT);
-    printf("min weight : %f\n", t->weight);
+    printf("min weight : %f (kg)\n", t->weight);
     
     /**
      * 02 平均値
      * */
     // case 01
     t = head_person(t);
-    printf("avg length : %f\n", avg_parson(t, CODE_LENGTH));
+    printf("avg length : %f (m)\n", avg_parson(t, CODE_LENGTH));
     // case 02
     t = head_person(t);
-    printf("avg weight : %f\n", avg_parson(t, CODE_WEIGHT));
+    printf("avg weight : %f (kg)\n", avg_parson(t, CODE_WEIGHT));
 
     /**
      * 03 中央値
      * */
     // case 01
     t = head_person(t);
-    printf("med length : %f\n", med_parson(t, CODE_LENGTH));
+    printf("med length : %f (m)\n", med_parson(t, CODE_LENGTH));
     // case 02
     t = head_person(t);
-    printf("med weight : %f\n", med_parson(t, CODE_WEIGHT));
+    printf("med weight : %f (kg)\n", med_parson(t, CODE_WEIGHT));
 
     /**
      * 04 標準偏差

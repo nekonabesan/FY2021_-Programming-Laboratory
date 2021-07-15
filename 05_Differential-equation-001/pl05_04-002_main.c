@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
+#include <float.h>
 
 #define N 40.0
 #define MAX 10.0
@@ -44,19 +45,19 @@ bool main(void) {
     dt = f(t) + f((t + 1/N));
     printf("%lf\n", dt);
 
-    do {
+    while ((FLT_EPSILON  * fmax(1, fmax(fabs(MAX), fabs(t)))) < fabs(MAX - t)) {
         k_1 = dt * f(x);
 		k_2 = dt * f(x + k_1/2.0);
         x += k_2;
         t += dt;
-        d_x = (g(t) - x)/g(t);
+        d_x = fabs((x - g(t))/g(t));
         fprintf(tmp_file, "%lf,%.20f\n", t, d_x);
-    } while (t < MAX);
+    }
 
     // 一時ファイルを閉じる
     fclose(tmp_file);
 
-    printf("%lf\n", x);
+    //printf("%lf\n", x);
 
     return true;
 }
