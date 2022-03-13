@@ -5,8 +5,7 @@
 #include <math.h>
 #include <float.h>
 
-#define N 10.0
-#define MAX 10.0
+#define MAX 100
 
 double f(double t) {
     return t;
@@ -20,8 +19,9 @@ double f(double t) {
 bool main(void) {
     FILE *tmp_file;
     double x = 1.0;
+    double dx = 0.0;
     double t = 0.0;
-    double dt = 0.0;
+    double dt = 0.1;
     double k_1 = 0.0;
     double k_2 = 0.0;
     double k_3 = 0.0;
@@ -29,28 +29,27 @@ bool main(void) {
     const char *path = "data/pl05_03.csv";
 
 
-    // 一時ファイルを開く
+    // 計算結果を出力するCSVファイルを開く
     tmp_file = fopen(path, "w");
     if (tmp_file == NULL) {
         printf("cannot open tmp \n");
         return false;
     }
 
-    dt = f(t) + f((t + 1/N));
-    printf("%lf\n", dt);
-
-    while ((FLT_EPSILON  * fmax(1, fmax(fabs(MAX), fabs(t)))) < fabs(MAX - t)) {
-        k_1 = dt * f(x);
-        k_2 = dt * f(x + k_1/2.0);
-        x += k_2;
+    // ルンゲクッタ法による数値解の導出
+    fprintf(tmp_file, "%6f,%.20f,%.20f,%.20f\n", t, x, exp(t), dx);
+    dx = fabs((x - exp(t))/exp(t));
+    for (unsigned int i = 0; i < MAX; i++) {
         t += dt;
-        fprintf(tmp_file, "%lf,%.6f\n", t, x);
+        k_1 = dt * f(x);
+        k_2 = dt * f(x + (k_1 * 0.5));
+        x += k_2;
+        dx = fabs((x - exp(t))/exp(t));
+        fprintf(tmp_file, "%6f,%.20f,%.20f,%.20f\n", t, x, exp(t), dx);
     }
 
-    // 一時ファイルを閉じる
+    // 計算結果を出力するCSVファイルを閉じる
     fclose(tmp_file);
-
-    printf("%lf\n", x);
 
     return true;
 }

@@ -108,7 +108,6 @@ struct answer * runge_kutta_method_04(struct answer *a, double dt, double max){
     double k_3 = 0.0;
     double k_4 = 0.0;
 
-    //while ((FLT_EPSILON  * fmax(1, fmax(fabs(max), fabs(t)))) < fabs(max - t)) {
     for (unsigned int i = 0; i < max; i++) {
         t += dt;
         k_1 = dt * f(x);
@@ -141,7 +140,7 @@ bool main(void) {
     double t = 0.0;
     double dt = 0.0;
     int max = 0;
-    const char *path = "data/prog05_02_001.csv";
+    const char *path = "data/2-2.csv";
     double list_dt[5] = {0.2, 0.1, 0.05, 0.025, 0.0125};
     int list_max[5] = {50, 100, 200, 400, 800};
     double list_time[5] = {10.0};

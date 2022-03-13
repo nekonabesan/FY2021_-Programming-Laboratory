@@ -5,21 +5,29 @@
 #include <math.h>
 #include <float.h>
 
-#define MAX 400
+#define MAX 100
+
+double f(double t) {
+    return t;
+}
 
 /**
- * 例題2
- * 例題１で作成したプログラムのタイムステップを
- * dt=0.025に変更した数値積分を行い、dt=0.1の結果と比較する。
- * 時間があればタイムステップと計算終了時間を変更して誤差の変化を確認する。
+ * 例題3
+ * 2次ルンゲクッタ法
+ * 数値積分の間隔はdt=0.1として、t=10まで計算する
  * */
 bool main(void) {
     FILE *tmp_file;
     double x = 1.0;
     double dx = 0.0;
     double t = 0.0;
-    double dt = 0.025;
-    const char *path = "data/pl05_02.csv";
+    double dt = 0.1;
+    double k_1 = 0.0;
+    double k_2 = 0.0;
+    double k_3 = 0.0;
+    double k_4 = 0.0;
+    const char *path = "data/pl06_02.csv";
+
 
     // 計算結果を出力するCSVファイルを開く
     tmp_file = fopen(path, "w");
@@ -28,16 +36,18 @@ bool main(void) {
         return false;
     }
 
-    // オイラー法による数値解の導出
+    // ルンゲクッタ法による数値解の導出
     fprintf(tmp_file, "%6f,%.20f,%.20f,%.20f\n", t, x, exp(t), dx);
     dx = fabs((x - exp(t))/exp(t));
     for (unsigned int i = 0; i < MAX; i++) {
         t += dt;
-        x += (x * dt);
+        k_1 = dt * f(x);
+        k_2 = dt * f(x + (k_1 * 0.5));
+        x += k_2;
         dx = fabs((x - exp(t))/exp(t));
         fprintf(tmp_file, "%6f,%.20f,%.20f,%.20f\n", t, x, exp(t), dx);
     }
-    
+
     // 計算結果を出力するCSVファイルを閉じる
     fclose(tmp_file);
 

@@ -183,7 +183,7 @@ struct step* init_data(const char* path) {
 }
 
 //============================================================================//
-// 
+// dx/dtを返す処理
 // @param double t
 // @return double t
 //============================================================================//
@@ -192,7 +192,7 @@ double f(double t) {
 }
 
 //============================================================================//
-// 
+// 厳密解を返す処理
 // @param double t
 // @return exp(t)
 //============================================================================//
@@ -216,7 +216,7 @@ bool main(void) {
     double exat = 0.0;
     unsigned int values = 0;
     struct step *p = NULL;
-    const char *out = "data/prog05_01_001.csv";
+    const char *out = "data/2-1.csv";
     const char *path = "data/kadai1.csv";
 
     // ファイルから計算終了時間とタイムステップを読み込む
