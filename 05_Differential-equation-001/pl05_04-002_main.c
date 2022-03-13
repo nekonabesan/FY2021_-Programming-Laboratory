@@ -3,9 +3,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
+#include <float.h>
 
-#define N 40.0
-#define MAX 10.0
+#define MAX 400
 
 double f(double t) {
     return t;
@@ -24,13 +24,11 @@ double g(double t) {
 bool main(void) {
     FILE *tmp_file;
     double x = 1.0;
-    double d_x = 0.0;
+    double dx = 0.0;
     double t = 0.0;
-    double dt = 0.0;
+    double dt = 0.025;
     double k_1 = 0.0;
     double k_2 = 0.0;
-    double k_3 = 0.0;
-    double k_4 = 0.0;
     const char *path = "data/pl05_04-002.csv";
 
 
@@ -41,22 +39,20 @@ bool main(void) {
         return false;
     }
 
-    dt = f(t) + f((t + 1/N));
-    printf("%lf\n", dt);
-
-    do {
-        k_1 = dt * f(x);
-		k_2 = dt * f(x + k_1/2.0);
+    // ルンゲクッタ法による数値解の導出
+    dx = fabs((x - exp(t))/exp(t));
+    fprintf(tmp_file, "%lf,%.20f,%.20f,%.20f\n", t, x, exp(t),dx);
+    for (unsigned int i = 0; i <= MAX; i++) {
         x += k_2;
+        k_1 = dt * f(x);
+		k_2 = dt * f(x + (k_1 * 0.5));
+        dx = fabs((x - g(t))/g(t));
+        fprintf(tmp_file, "%lf,%.20f,%.20f,%.20f\n", t, x, exp(t),dx);
         t += dt;
-        d_x = (g(t) - x)/g(t);
-        fprintf(tmp_file, "%lf,%.20f\n", t, d_x);
-    } while (t < MAX);
+    }
 
     // 一時ファイルを閉じる
     fclose(tmp_file);
-
-    printf("%lf\n", x);
 
     return true;
 }

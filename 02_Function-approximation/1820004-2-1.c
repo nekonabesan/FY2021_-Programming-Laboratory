@@ -3,17 +3,11 @@
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
-#include <time.h>
 
 #define CODE_LENGTH 1
 #define CODE_WEIGHT 2
 #define CODE_MAX 1
 #define CODE_MIN 2
-
-// 課題(2)4.より繰り返し回数を100回とする
-#define MAX_COUNT 100
-// 0以上1未満の実数値の乱数を生成
-#define randDouble ((double)rand()+1.0)/((double)RAND_MAX+2.0) 
 
 struct person {
   unsigned int seq;
@@ -167,14 +161,14 @@ struct person* init_data(const char* path) {
         t = (struct person*)malloc(sizeof(struct person) * 1);
         // リストの先頭要素を取得
         if(seq == 0){
-            start = t;
-            t->prev = NULL;
+        start = t;
+        t->prev = NULL;
         }
         // 構造体を初期化
         t = initialize(t);
         if(prev){
-            t->prev = prev;
-            prev->next = t;
+        t->prev = prev;
+        prev->next = t;
         }
         prev = t;
         t->seq = seq;
@@ -226,6 +220,32 @@ double avg_parson(struct person* p, unsigned int control_code) {
 
     return avg;
 }
+
+//--------------------------------------------------------------//
+// 身長の単位を(cm->m)へ変換する処理
+// @param struct person *p
+// @return struct person *p
+//--------------------------------------------------------------//
+struct person * from_cm_to_m_for_length(struct person* p) {
+  unsigned int max = 0;
+
+  // 要素数を取得
+  p = eol_person(p);
+  max = p->seq;
+
+  p = head_person(p);
+  for (unsigned int i = 0; i <= max; i++) {
+    p->length = p->length * 0.01;
+    if(p->next != NULL) {
+      p = p->next;
+    }
+  }
+
+  p = head_person(p);
+
+  return p;
+};
+
 
 //--------------------------------------------------------------//
 // S1を導出する処理
@@ -335,7 +355,7 @@ double calc_a(struct person *p, unsigned int x_axis) {
 
     p = head_person(p);
     s1 = calc_S1(p);
-    a = (s1 - (avg_x * avg_y))/(s2 - powl(avg_x, 2));
+    a = (s1 - (avg_x * avg_y))/(s2 - pow(avg_x, 2));
     
     p = head_person(p);
 
@@ -383,114 +403,84 @@ double calc_b(struct person *p, unsigned int x_axis) {
 }
 
 //============================================================================//
-// genertate-data.cより移植
-// @param double mu
-// @param double sigma
-// @return double mu + sigma * e;
-//============================================================================//
-double rand_normal(double mu, double sigma) {
-    double e = sqrt(-2.0*log(randDouble)) * sin(2.0*M_PI*randDouble);
-    return mu + sigma*e;
-}
-
-//============================================================================//
-// genertate-data.cより移植
-// @paramunsigned int cnt
-// @param char *path
-// @return struct person *t
-//============================================================================//
-bool generete_data(unsigned int max, const char* path) {
-    double a = 0.8; 
-    double b = 1.5; 
-    double e = 0.0;
-    double x = 0.0; 
-    double y = 0.0;
-    FILE *tmp_file;
-
-    // 一時ファイルを開く
-    tmp_file = fopen(path, "w");
-    if (tmp_file == NULL) {
-        printf("cannot open tmp \n");
-        return false;
-    }
-
-    // データ対を生成する
-    for(unsigned int i = 0; i < max; i++){
-        x = randDouble * 10.0;
-        e = rand_normal(0, 1);
-        y = a * x + b + e;
-        fprintf(tmp_file, "%d,%lf,%lf\n", i, x, y);
-    }
-
-    // 一時ファイルを閉じる
-    fclose(tmp_file);
-
-    return true;
-}
-
-//============================================================================//
-// 課題(2)のmain関数
-// generete_data.cの処理を100回繰り返す
-// @paramu int argc
-// @param char *argv[]
+// 課題(1)のmain関数
 // @return bool 
 //============================================================================//
-bool main(int argc, char *argv[]) {
+bool main(void) {
     struct person *t = NULL;
     unsigned int max = 0;
-    const char *tmp_file_path = "data/tmp.csv";
-    const char *data_file_path = "data/data_02_02_re.csv";
+    //const char *path = "data/data02_01.csv";
+
+    // データをCSVから読み込む場合
+    // 以下のコメントを外し「データを配列から読み込む場合(ここから)～(ここまで)」をコメント
+    //t = init_data(path);
+
+    // データを配列から読み込む場合(ここから)
+    struct person *n = NULL;
+    struct person *prev = NULL;
+    struct person *start = NULL;
+    unsigned int seq = 0;
     double a = 0.0;
     double b = 0.0;
-    double rand_double = 0.0;
-    FILE *file;
 
-    // 引数が未定義の場合、データ数の上限値を100対で初期化する
-    if(argv[1] == NULL || strlen(argv[1]) == 0) {
-        max = 100;
+    // データを配列として定義する
+    double data[11][3] = {
+        {1,168,60}
+        ,{2,162,55}
+        ,{3,171,65}
+        ,{4,159,60}
+        ,{5,174,72}
+        ,{6,166,57}
+        ,{7,175,61}
+        ,{8,176,66}
+        ,{9,168,56}
+        ,{10,182,69}
+        ,{11,179,62}
+    };
+
+    // 配列として定義したデータから構造体を初期化する
+    for (unsigned int i = 0; i < 11; i ++) {
+        t = (struct person*)malloc(sizeof(struct person) * 1);
+        // リストの先頭要素を取得
+        if(seq == 0){
+        start = t;
+        t->prev = NULL;
+        }
+        // 構造体を初期化
+        t = initialize(t);
+        if(prev){
+        t->prev = prev;
+        prev->next = t;
+        }
+        prev = t;
+        t->seq = seq;
+        t->length = data[i][1];
+        t->weight = data[i][2];
+        t->next = NULL;
+        seq++;
+    }
+    // データを配列から読み込む場合(ここまで)
+
+
+    // 身長の単位を(m)へ変換
+    t = from_cm_to_m_for_length(t);
+
+    // 傾きと切片を導出する    
+    t = head_person(t);
+    a = calc_a(t, CODE_LENGTH);
+    t = head_person(t);
+    b = calc_b(t, CODE_LENGTH);
+
+    // 傾きを表示する
+    printf("a : %lf\n", a);
+    // 切片を表示する
+    printf("b : %lf\n", b);
+    // 近似式を表示する
+    if(b < 0) {
+        printf("y = %lfx - %lf\n", a, fabs(b));
     } else {
-        max = atoi(argv[1]);
+        printf("y = %lfx + %lf\n", a, b);
     }
 
-    // データファイルを開く
-    file = fopen(data_file_path, "w");
-    if (file == NULL) {
-        printf("cannot open data file\n");
-        return false;
-    }
-    
-    // 乱数を生成する
-    srand((unsigned int)time(NULL));
-    rand();
-
-    // ヒストグラム用データを生成する
-    for (unsigned int i = 0; i < MAX_COUNT; i++) {
-
-        // genertate-dataでデータ対を生成する
-        generete_data(max, tmp_file_path);
-
-        // 一時ファイルを読み込み構造体を初期化
-        t = init_data(tmp_file_path);
-
-        // 課題(1)で提出済みの関数calc_aによりデータ対から傾きを導出する
-        t = head_person(t);
-        a = calc_a(t, CODE_LENGTH);
-        // 課題(1)で提出済みの関数calc_bによりデータ対から切片を導出する
-        t = head_person(t);
-        b = calc_b(t, CODE_LENGTH);
-
-        // ファイルへ書き込む
-        fprintf(file, "%d,%lf,%lf\n", i, a, b);
-
-        // 一時ファイルを削減する
-        //remove(tmp_file_path);
-
-        // メモリ解放
-        del_person_array(head_person(t));
-    }
-
-    // データファイルを閉じる
-    fclose(file);
-
-    return true;  
+    return true;
 }
